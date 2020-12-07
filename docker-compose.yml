@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  app:
+    build: ./
+    ports:
+      - '9000:8080'
+
+    volumes:
+      # ローカルにインストールされているAWS Lambda Runtime Interface Emulatorを使う
+      - ~/.aws-lambda-rie:/aws-lambda
+      - .:/app
+      - /app/node_modules
+      - /app/.git
+    # RIE経由でRICを実行させる
+    entrypoint: /aws-lambda/aws-lambda-rie
+    command: [/usr/local/bin/npx, aws-lambda-ric, app.handler]
+
+volumes:
+  nosync:
