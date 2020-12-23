@@ -12,6 +12,8 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'import/extensions': ['.js', '.jsx', '.json', '.ts', '.tsx'],
     'import/no-unresolved': 'off',
+    'import/prefer-default-export': 'off',
   },
 }

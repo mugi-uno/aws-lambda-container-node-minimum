@@ -20,7 +20,7 @@ var __toModule = (module2) => {
   return __exportStar(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, "default", {value: module2, enumerable: true}), module2);
 };
 
-// app.ts
+// src/execute.ts
 var canvas = __toModule(require("canvas"));
 
 // src/drawToCanvas.ts
@@ -30,8 +30,8 @@ var PADDING = 30;
 var MIN_CHAR_HEIGHT = 120;
 var TEXT_BOX = SIZE - PADDING * 2;
 var BASE_FONT_SIZE = 480;
-var drawToCanvas = (canvas2, text) => {
-  const ctx = canvas2.getContext("2d");
+var drawToCanvas = (canvas3, text) => {
+  const ctx = canvas3.getContext("2d");
   ctx.fillStyle = "#FF5555";
   ctx.strokeStyle = "#FF5555";
   ctx.textBaseline = "middle";
@@ -74,22 +74,17 @@ var analyzeTest = (ctx, text) => {
   }));
 };
 
-// app.ts
+// src/execute.ts
+var fs = __toModule(require("fs"));
 var path = __toModule(require("path"));
-exports.handler = async (event, _context) => {
-  var _a, _b;
-  const text = (_b = (_a = event.queryStringParameters) == null ? void 0 : _a.text) != null ? _b : "\u5C71\u7530";
-  if (text.length === 0 || text.length > 6) {
-    return {statusCode: 400};
-  }
-  canvas.registerFont(path.default.resolve(__dirname, "./fonts/g_comickoin_freeR.ttf").toString(), {family: "g_comickoin_freeR"});
-  const canvas2 = canvas.createCanvas(SIZE, SIZE);
-  drawToCanvas(canvas2, text);
-  console.log(canvas2.toBuffer("image/png").toString("base64"));
-  return {
-    statusCode: 200,
-    headers: {"Content-Type": "'image/png'"},
-    body: canvas2.toBuffer("image/png").toString("base64"),
-    isBase64Encoded: true
-  };
-};
+canvas.registerFont(path.default.resolve(__dirname, "../fonts/g_comickoin_freeR.ttf").toString(), {family: "g_comickoin_freeR"});
+var canvas2 = canvas.createCanvas(SIZE, SIZE);
+drawToCanvas(canvas2, "\u5C71\u7530");
+console.log("============");
+console.log(canvas2.toDataURL().replace("data:image/png;base64,", ""));
+console.log("============");
+console.log(canvas2.toBuffer("image/png").toString("base64"));
+var out = fs.default.createWriteStream(__dirname + "/test.png");
+var stream = canvas2.createPNGStream();
+stream.pipe(out);
+out.on("finish", () => console.log("The PNG file was created."));

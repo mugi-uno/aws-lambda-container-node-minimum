@@ -19,6 +19,8 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install --production
 
+COPY src/ ./src/
+COPY fonts/ ./fonts/
 COPY app.ts ./
 RUN npm run build
 

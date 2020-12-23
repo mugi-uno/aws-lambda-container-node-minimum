@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build:dev": "esbuild ./src/execute.ts --outfile=./src/execute.js --bundle --platform=node --target=node14 --external:canvas",
     "build": "esbuild app.ts --outfile=app.js --bundle --platform=node --target=node14 --external:canvas"
   },
   "keywords": [],

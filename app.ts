@@ -1,26 +1,24 @@
-import { Context } from 'aws-lambda'
-import { createCanvas } from 'canvas'
+import { APIGatewayEvent, Context } from 'aws-lambda'
+import { createCanvas, registerFont } from 'canvas'
+import { SIZE, drawToCanvas } from './src/drawToCanvas'
+import path from 'path'
 
-exports.handler = async (_event: any, _context: Context) => {
-  const canvas = createCanvas(200, 200)
-  const ctx = canvas.getContext('2d')
+exports.handler = async (event: APIGatewayEvent, _context: Context) => {
+  const text = event.queryStringParameters?.text ?? ''
 
-  ctx.font = '30px Impact'
-  ctx.rotate(0.1)
-  ctx.fillText('Awesome!', 50, 100)
+  if (text.length === 0 || text.length > 6) {
+    return { statusCode: 400 }
+  }
 
-  // Draw line under text
-  const text = ctx.measureText('Awesome!')
-  ctx.strokeStyle = 'rgba(0,0,0,0.5)'
-  ctx.beginPath()
-  ctx.lineTo(50, 102)
-  ctx.lineTo(50 + text.width, 102)
-  ctx.stroke()
+  registerFont(path.resolve(__dirname, './fonts/g_comickoin_freeR.ttf').toString(), { family: 'g_comickoin_freeR' })
+
+  const canvas = createCanvas(SIZE, SIZE)
+  drawToCanvas((canvas as any) as HTMLCanvasElement, text)
 
   return {
     statusCode: 200,
     headers: { 'Content-Type': "'image/png'" },
-    body: canvas.toDataURL().replace('data:image/png;base64,', ''),
+    body: canvas.toBuffer('image/png').toString('base64'),
     isBase64Encoded: true,
   }
 }
